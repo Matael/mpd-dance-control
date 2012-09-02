@@ -11,45 +11,44 @@ import sys
 
 droid = android.Android()
 
-HOST = '192.168.1.14'
+HOST = '192.168.1.65'
 PORT = 3000
 
-#Choose which list type you want.
-def getaction():
-    "get user action"
+while True:
     droid.dialogCreateAlert("MPD Remote Controler")
-    droid.dialogSetItems(["Start", "Pause", "Stop", "Previous", "Next"])
+    droid.dialogSetItems(["Start", "Pause", "Stop", "Previous", "Next", "Volume +", "Volume -"])
+    droid.dialogSetNegativeButtonText("Cancel")
     droid.dialogShow()
     result = droid.dialogGetResponse().result
     if result.has_key("item"):
-        return result["item"]
+        action = result["item"]
     else:
-        return -1
+        action = -1
 
-#Choose List
-action = getaction()
 
-if action < 0:
-    droid.makeToast("no item chosen")
-    droid.close()
-    sys.exit()
+    if action < 0:
+        droid.makeToast("No item chosen\nGoodbye.")
+        droid.close()
+        sys.exit()
 
-real_acts = [
-    'start',
-    'pause',
-    'stop',
-    'previous',
-    'next'
-]
+    real_acts = [
+        'start',
+        'pause',
+        'stop',
+        'previous',
+        'next',
+        'volinc',
+        'voldec'
+    ]
 
-result = urllib2.urlopen("http://{0}:{1}/{2}".format(
-    HOST,
-    PORT,
-    real_acts[action])
-)
+    result = urllib2.urlopen("http://{0}:{1}/{2}".format(
+        HOST,
+        PORT,
+        real_acts[action])
+    )
 
-toast = '\n'.join(result.readlines())
-droid.makeToast(toast.rstrip())
+    toast = '\n'.join(result.readlines())
+    droid.makeToast(toast.rstrip())
 
 droid.close()
 sys.exit()
