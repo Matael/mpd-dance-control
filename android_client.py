@@ -16,7 +16,14 @@ PORT = 3000
 
 while True:
     droid.dialogCreateAlert("MPD Remote Controler")
-    droid.dialogSetItems(["Start", "Pause", "Stop", "Previous", "Next", "Volume +", "Volume -"])
+    droid.dialogSetItems(['Pause',
+                          'Next',
+                          'Previous',
+                          'Volume +',
+                          'Volume -',
+                          'Current Song',
+                          'Start',
+                          'Stop'])
     droid.dialogSetNegativeButtonText("Cancel")
     droid.dialogShow()
     result = droid.dialogGetResponse().result
@@ -32,13 +39,14 @@ while True:
         sys.exit()
 
     real_acts = [
-        'start',
         'pause',
-        'stop',
-        'previous',
         'next',
+        'previous',
         'volinc',
-        'voldec'
+        'voldec',
+        'current',
+        'start',
+        'stop'
     ]
 
     result = urllib2.urlopen("http://{0}:{1}/{2}".format(
