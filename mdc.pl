@@ -51,8 +51,8 @@ sub change_volume {
 	$current_volume = 0 if $current_volume < 0;
 	$current_volume = 100 if $current_volume > 100;
 
-	my $command = "setvol ".$current_volume;
-	$conn->print($command);
+	my $msg = "setvol ".$current_volume;
+	$conn->print($msg);
 	my $result = $conn->getline;
 	return $result;
 }
@@ -68,5 +68,19 @@ get "/next"		=> sub { return send_command('next');	  };
 
 get "/volinc" 	=> sub { return change_volume('+'); };
 get "/voldec" 	=> sub { return change_volume('-'); };
+
+get "/current" 	=> sub {
+	my $conn = get_conn;
+	$conn->buffer_empty;
+	$conn->print("currentsong");
+	my $i=0;
+	while ($i<4) { $conn->getline; $i++; }
+	my $artist = $conn->getline;
+	my $title = $conn->getline;
+	$conn->close;
+	$title =~ s/Title:\s(.*)$/$1/;
+	$artist =~ s/Artist:\s(.*)$/$1/;
+	return $title." - ".$artist;
+};
 
 dance;
